@@ -6,14 +6,22 @@ namespace SpecificationPattern.Services
 {
     public class CargoService
     {
+        OrderTypeIsReturnSpecification typeIsReturnSpecification;
+        XPaysSpecification xPaysSpecification;
+        CargoFeeGratherThanZeroSpecification cargoFeeGratherThanZeroSpecification;
+        OrSpecification<CargoModel> orSpecification;
+        AndSpecification<CargoModel> andSpecification;
+        public CargoService()
+        {
+            typeIsReturnSpecification = new();
+            xPaysSpecification = new();
+            cargoFeeGratherThanZeroSpecification = new();
+        }
+
         public async Task AddCargo(CargoModel cargoModel)
         {
-            OrderTypeIsReturnSpecification typeIsReturnSpecification = new();
-            XPaysSpecification xPaysSpecification = new();
-            CargoFeeGratherThanZeroSpecification cargoFeeGratherThanZeroSpecification = new();
-            OrSpecification<CargoModel> orSpecification = new(typeIsReturnSpecification, xPaysSpecification);
-            AndSpecification<CargoModel> andSpecification = new(cargoFeeGratherThanZeroSpecification, orSpecification);
-
+            orSpecification = new(typeIsReturnSpecification, xPaysSpecification);
+            andSpecification = new(cargoFeeGratherThanZeroSpecification, orSpecification);
             if (andSpecification.IsSatisfiedBy(cargoModel))
             {
                 await Console.Out.WriteLineAsync($"Insert işlemi yapıldı. OrderType:{cargoModel.OrderType} CargoType:{cargoModel.CargoType} CargoFee:{cargoModel.CargoFee}");
